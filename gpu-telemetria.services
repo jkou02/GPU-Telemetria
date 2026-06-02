@@ -1,0 +1,13 @@
+[Unit]
+Description=GPU-Telemetria Bot
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=~/Documentos/Trabajo/GPU-Telemetria
+ExecStart=~/Documentos/Entornos/venv-Telemetria/bin/python main.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
