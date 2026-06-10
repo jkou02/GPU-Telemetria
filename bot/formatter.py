@@ -79,3 +79,72 @@ def format_alertas():
         f"VRAM:     {ALERT_VRAM_PCT:.0f}%",
     ]
     return "\n".join(lines)
+
+
+def format_gpu_info(gpu, backend):
+    lines = ["*Información detallada de GPU*", ""]
+
+    # Backend detectado
+    backend_names = {
+        "nvidia": "NVIDIA (pynvml)",
+        "amd": "AMD (sysfs/amdgpu)",
+        "intel": "Intel (sysfs/i915)",
+    }
+    backend_label = backend_names.get(backend, backend or "Desconocido")
+    lines.append(f"*Backend:* {backend_label}")
+    lines.append("")
+
+    if not gpu:
+        lines.append("No se detectó GPU activa.")
+        lines.append("")
+        lines.append("_Verifica que el driver esté instalado:_")
+        lines.append("_• NVIDIA: nvidia-ml-py_")
+        lines.append("_• AMD: driver amdgpu del kernel_")
+        lines.append("_• Intel: driver i915 del kernel_")
+        return "\n".join(lines)
+
+    # Nombre del modelo
+    lines.append(f"*Modelo:* {gpu['name']}")
+    lines.append("")
+
+    # Temperatura con indicador visual
+    temp = gpu["temperature"]
+    if temp >= 80:
+        temp_icon = "🔴"
+    elif temp >= 60:
+        temp_icon = "🟡"
+    else:
+        temp_icon = "🟢"
+    lines.append(f"*Temperatura:* {temp_icon} {temp:.1f} C")
+    lines.append("")
+
+    # VRAM
+    vram_total = gpu["memory_total"]
+    vram_used = gpu["memory_used"]
+    vram_pct = gpu["memory_percent"]
+
+    # Barra de progreso visual
+    bar_len = 10
+    filled = int(vram_pct / 100 * bar_len)
+    bar = "█" * filled + "░" * (bar_len - filled)
+
+    lines.append("*Memoria VRAM*")
+    lines.append(f"  Uso: {bar} {vram_pct:.1f}%")
+    lines.append(f"  {_fmt_bytes(vram_used)} / {_fmt_bytes(vram_total)}")
+    lines.append("")
+
+    # Utilización GPU con barra
+    gpu_util = gpu["gpu_util"]
+    filled_util = int(gpu_util / 100 * bar_len)
+    bar_util = "█" * filled_util + "░" * (bar_len - filled_util)
+
+    lines.append("*Utilización GPU*")
+    lines.append(f"  Uso: {bar_util} {gpu_util:.1f}%")
+    lines.append("")
+
+    # Umbrales de alerta
+    lines.append("*Umbrales de alerta*")
+    lines.append(f"  GPU temp: {ALERT_GPU_TEMP:.0f} C")
+    lines.append(f"  VRAM:     {ALERT_VRAM_PCT:.0f}%")
+
+    return "\n".join(lines)

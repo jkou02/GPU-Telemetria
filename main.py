@@ -2,7 +2,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 
 from config import TELEGRAM_BOT_TOKEN, CHECK_INTERVAL_MIN
 from database.repository import init_db
-from bot.handlers import status_command, history_command, alertas_command
+from bot.handlers import status_command, history_command, alertas_command, gpu_info_command
 from bot.alerts import check_and_alert
 
 
@@ -23,6 +23,7 @@ def main():
     app.add_handler(CommandHandler("status", status_command))
     app.add_handler(CommandHandler("history", history_command))
     app.add_handler(CommandHandler("alertas", alertas_command))
+    app.add_handler(CommandHandler("gpu_info", gpu_info_command))
     app.run_polling()
 
 

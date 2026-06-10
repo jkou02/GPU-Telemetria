@@ -2,9 +2,9 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from collector.system import get_system_stats
-from collector.gpu import get_gpu_stats
+from collector.gpu import get_gpu_stats, get_gpu_backend_name
 from database.repository import get_recent_entries
-from bot.formatter import format_status, format_history, format_alertas
+from bot.formatter import format_status, format_history, format_alertas, format_gpu_info
 
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -22,4 +22,11 @@ async def history_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def alertas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = format_alertas()
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+
+async def gpu_info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    gpu = get_gpu_stats()
+    backend = get_gpu_backend_name()
+    msg = format_gpu_info(gpu, backend)
     await update.message.reply_text(msg, parse_mode="Markdown")
