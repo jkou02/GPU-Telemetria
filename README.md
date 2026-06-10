@@ -1,11 +1,14 @@
 # GPU-Telemetria
 
-Monitoreo de CPU, RAM y GPU NVIDIA con almacenamiento local en SQLite y
+Monitoreo de CPU, RAM y GPU (NVIDIA, AMD, Intel) con almacenamiento local en SQLite y
 notificaciones vía Telegram.
 
 ## Requisitos
 
-- Linux con drivers NVIDIA y `nvidia-smi` funcionando
+- Linux con drivers de GPU instalados:
+  - **NVIDIA**: driver NVIDIA + `nvidia-ml-py` (`pip install nvidia-ml-py`)
+  - **AMD**: driver `amdgpu` del kernel (automático en la mayoría de distribuciones)
+  - **Intel**: driver `i915` del kernel (automático en la mayoría de distribuciones)
 - Python >= 3.10
 - Bot de Telegram (crear con [@BotFather](https://t.me/botfather))
 
@@ -35,6 +38,7 @@ cp .env.example .env
 | `ALERT_VRAM_PCT` | Umbral de uso de VRAM (%) |
 | `CHECK_INTERVAL_MIN` | Intervalo entre chequeos (min) |
 | `DB_PATH` | Ruta a la base SQLite |
+| `GPU_BACKEND` | Backend GPU: `nvidia`, `amd`, `intel` (vacío = auto-detectar) |
 
 ### Obtener TELEGRAM_CHAT_ID
 
@@ -42,6 +46,26 @@ cp .env.example .env
 2. Enviar un mensaje cualquiera
 3. Visitar `https://api.telegram.org/bot<TOKEN>/getUpdates`
 4. El `chat.id` aparece en la respuesta JSON
+
+### Soporte multi-vendor GPU
+
+El sistema detecta automáticamente el tipo de GPU instalada:
+
+| Vendor | Método de detección | Dependencias |
+|--------|---------------------|--------------|
+| **NVIDIA** | `pynvml` | `pip install nvidia-ml-py` |
+| **AMD** | sysfs (`amdgpu`) | Driver `amdgpu` del kernel |
+| **Intel** | sysfs (`i915`) | Driver `i915` del kernel |
+
+**Auto-detección:** NVIDIA → AMD → Intel
+
+**Forzar backend específico:**
+
+```bash
+GPU_BACKEND=nvidia python main.py
+GPU_BACKEND=amd python main.py
+GPU_BACKEND=intel python main.py
+```
 
 ## Uso
 
@@ -55,6 +79,7 @@ El bot arranca en primer plano. Sirve para probar que funciona antes de
 instalarlo como servicio. Comandos disponibles una vez corriendo:
 
 - `/status` — estado actual del sistema
+- `/gpu_info` — información detallada de la GPU detectada
 - `/history` — últimos 5 registros de la base de datos
 - `/alertas` — umbrales configurados
 

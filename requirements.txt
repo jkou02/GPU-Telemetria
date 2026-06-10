@@ -1,4 +1,8 @@
 psutil
-nvidia-ml-py
 python-telegram-bot[job-queue]>=20.0
 python-dotenv
+
+# Backends de GPU (instalar el que necesites)
+# nvidia-ml-py    # NVIDIA
+# pyrsmi          # AMD (requiere ROCm instalado)
+# intel-gpu-tools # Intel (requiere intel-gpu-tools instalado)

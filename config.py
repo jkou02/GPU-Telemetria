@@ -11,3 +11,4 @@ ALERT_RAM_PCT = float(os.getenv("ALERT_RAM_PCT", "90"))
 ALERT_VRAM_PCT = float(os.getenv("ALERT_VRAM_PCT", "90"))
 CHECK_INTERVAL_MIN = int(os.getenv("CHECK_INTERVAL_MIN", "5"))
 DB_PATH = os.getenv("DB_PATH", "data/telemetry.db")
+GPU_BACKEND = os.getenv("GPU_BACKEND", "")  # nvidia, amd, intel o vacío para auto-detect
