@@ -1,22 +1,35 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from collector.system import get_system_stats
-from collector.gpu import get_gpu_stats, get_gpu_backend_name
-from database.repository import get_recent_entries
-from bot.formatter import format_status, format_history, format_alertas, format_gpu_info
+from config import HOSTNAME
+from database.repository import get_recent_entries, get_latest_entry, get_hostnames, row_to_stats
+from bot.formatter import format_status, format_history, format_alertas, format_gpu_info, format_pc_list
+
+
+def _resolve_hostname(args):
+    """Devuelve el hostname a consultar a partir de los argumentos del comando."""
+    if args:
+        return args[0]
+    return HOSTNAME
 
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    system = get_system_stats()
-    gpu = get_gpu_stats()
-    msg = format_status(system, gpu)
+    hostname = _resolve_hostname(context.args)
+    entry = get_latest_entry(hostname)
+
+    if not entry:
+        await update.message.reply_text(f"No hay datos para '{hostname}'.")
+        return
+
+    system, gpu = row_to_stats(entry)
+    msg = format_status(system, gpu, hostname)
     await update.message.reply_text(msg, parse_mode="Markdown")
 
 
 async def history_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    entries = get_recent_entries(5)
-    msg = format_history(entries)
+    hostname = _resolve_hostname(context.args)
+    entries = get_recent_entries(5, hostname=hostname)
+    msg = format_history(entries, hostname)
     await update.message.reply_text(msg, parse_mode="Markdown")
 
 
@@ -26,7 +39,19 @@ async def alertas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def gpu_info_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    gpu = get_gpu_stats()
-    backend = get_gpu_backend_name()
-    msg = format_gpu_info(gpu, backend)
+    hostname = _resolve_hostname(context.args)
+    entry = get_latest_entry(hostname)
+
+    if not entry:
+        await update.message.reply_text(f"No hay datos para '{hostname}'.")
+        return
+
+    system, gpu = row_to_stats(entry)
+    msg = format_gpu_info(gpu, hostname)
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+
+async def pcs_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    hostnames = get_hostnames()
+    msg = format_pc_list(hostnames)
     await update.message.reply_text(msg, parse_mode="Markdown")
