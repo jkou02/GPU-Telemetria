@@ -1,4 +1,5 @@
 import os
+import socket
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,5 +11,6 @@ ALERT_GPU_TEMP = float(os.getenv("ALERT_GPU_TEMP", "80"))
 ALERT_RAM_PCT = float(os.getenv("ALERT_RAM_PCT", "90"))
 ALERT_VRAM_PCT = float(os.getenv("ALERT_VRAM_PCT", "90"))
 CHECK_INTERVAL_MIN = int(os.getenv("CHECK_INTERVAL_MIN", "5"))
-DB_PATH = os.getenv("DB_PATH", "data/telemetry.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+HOSTNAME = os.getenv("HOSTNAME", socket.gethostname())
 GPU_BACKEND = os.getenv("GPU_BACKEND", "")  # nvidia, amd, intel o vacío para auto-detect

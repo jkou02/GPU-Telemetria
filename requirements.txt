@@ -1,6 +1,7 @@
 psutil
 python-telegram-bot[job-queue]>=20.0
 python-dotenv
+psycopg2-binary
 
 # Backends de GPU (instalar el que necesites)
 # nvidia-ml-py    # NVIDIA
