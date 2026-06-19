@@ -1,11 +1,40 @@
+# GPU-Telemetria — Unidades systemd
+#
+# Instalación:
+#   mkdir -p ~/.config/systemd/user
+#   cp gpu-telemetria.services ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now gpu-telemetria-bot.service
+#   systemctl --user enable --now gpu-telemetria-agent.service
+#
+# Ajusta las rutas WorkingDirectory y ExecStart según tu entorno.
+
+# ── Bot de Telegram ──────────────────────────────────────────────
+
 [Unit]
 Description=GPU-Telemetria Bot
 After=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=~/Documentos/Trabajo/GPU-Telemetria
-ExecStart=~/Documentos/Entornos/venv-Telemetria/bin/python main.py
+WorkingDirectory=/home/jkou/Documentos/Trabajo/GPU-Telemetria
+ExecStart=/home/jkou/Documentos/Entorno/venv-Telemetria-GPU/bin/python main.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
+
+# ── Agente recolector ────────────────────────────────────────────
+
+[Unit]
+Description=GPU-Telemetria Agent
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/jkou/Documentos/Trabajo/GPU-Telemetria
+ExecStart=/home/jkou/Documentos/Entorno/venv-Telemetria-GPU/bin/python agent.py
 Restart=always
 RestartSec=10
 
