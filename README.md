@@ -65,8 +65,20 @@ cp .env.example .env
 
 ### Crear la base de datos PostgreSQL
 
+**Opción A — PostgreSQL nativo:**
+
 ```bash
 sudo -u postgres createdb telemetria
+```
+
+**Opción B — Docker:**
+
+```bash
+docker run -d --name telemetria-pg \
+  -e POSTGRES_USER=telemetria \
+  -e POSTGRES_PASSWORD=telemetria \
+  -e POSTGRES_DB=telemetria \
+  -p 5432:5432 postgres:16-alpine
 ```
 
 Las tablas se crean automáticamente al iniciar `agent.py` o `main.py`.
@@ -119,18 +131,30 @@ python main.py      # Bot de Telegram (primer plano)
 
 ### Modo multi-PC (con Tailscale)
 
-1. En el **servidor central** (donde está PostgreSQL):
+1. Instalar Tailscale en todas las PCs:
+   ```bash
+   curl -fsSL https://tailscale.com/install.sh | sh
+   sudo tailscale up
+   ```
+   Todas las máquinas deben estar en la misma red Tailscale (misma cuenta).
+
+2. En el **servidor central** (donde está PostgreSQL):
+   - Configurar `.env` con `DATABASE_URL` apuntando a `localhost` (o `127.0.0.1`) y un `HOSTNAME` único.
    ```bash
    python main.py &      # Bot de Telegram
    python agent.py &     # Opcional: recolecta métricas del propio servidor
    ```
 
-2. En cada **PC adicional**:
-   - Asegurate de que Tailscale esté activo y la PC alcance el servidor PostgreSQL.
-   - Configurá `DATABASE_URL` con la IP de Tailscale del servidor y un `HOSTNAME` único.
+3. En cada **PC adicional**:
+   - Configurar `.env` con:
+     - `DATABASE_URL` apuntando a la IP de Tailscale del servidor: `postgresql://user:pass@100.x.x.x:5432/telemetria`
+     - `HOSTNAME` único para esta PC (ej. `laptop`, `pc-juegos`).
+     - El mismo `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` que el servidor.
    ```bash
    python agent.py
    ```
+
+> **Importante:** cada PC debe tener un `HOSTNAME` distinto en su `.env`. Es el identificador que usarás en los comandos del bot (`/status laptop`).
 
 ## Comandos de Telegram
 
@@ -142,8 +166,9 @@ python main.py      # Bot de Telegram (primer plano)
 | `/alertas` | Umbrales de alerta configurados |
 | `/pcs` | Lista de PCs registradas |
 
-El argumento `[pc]` es opcional. Si se omite, se usa el `HOSTNAME` del agente
-que esté corriendo en la misma máquina que el bot (o el definido en `.env`).
+El argumento `[pc]` es opcional. Si se omite, se usa el `HOSTNAME` definido
+en el `.env` de la máquina donde corre el bot (normalmente el servidor central).
+Para consultar otra PC, especifícala: `/status laptop`, `/history pc-juegos`.
 
 ## Tests
 
@@ -213,14 +238,13 @@ Activar e iniciar:
 
 ```bash
 systemctl --user daemon-reload
-systemctl --user enable gpu-telemetria-bot gpu-telemetria-agent
-systemctl --user start gpu-telemetria-bot gpu-telemetria-agent
+systemctl --user enable gpu-telemetria-bot.service gpu-telemetria-agent.service
+systemctl --user start gpu-telemetria-bot.service gpu-telemetria-agent.service
 ```
 
 Verificar estado:
-
 ```bash
-systemctl --user status gpu-telemetria-bot gpu-telemetria-agent
+systemctl --user status gpu-telemetria-bot.service gpu-telemetria-agent.service
 ```
 
 Ver logs:
@@ -232,6 +256,11 @@ journalctl --user -u gpu-telemetria-agent -f
 
 > En modo multi-PC, desplegá solo `gpu-telemetria-agent.service` en las PCs
 > clientes, y ambos servicios en el servidor central.
+> 
+> Para que los servicios sigan corriendo al cerrar sesión, habilitá lingering:
+> ```bash
+> sudo loginctl enable-linger $USER
+> ```
 
 ## Migración desde SQLite
 
