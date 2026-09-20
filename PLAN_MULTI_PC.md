@@ -298,6 +298,7 @@ from collector.system import get_system_stats
 from collector.gpu import get_gpu_stats
 from database.repository import init_db, insert_telemetry, migrate_from_sqlite
 
+
 def main():
     init_db()
     migrate_from_sqlite()
@@ -306,6 +307,7 @@ def main():
         gpu = get_gpu_stats()
         insert_telemetry(system, gpu)
         time.sleep(CHECK_INTERVAL_MIN * 60)
+
 
 if __name__ == "__main__":
     main()

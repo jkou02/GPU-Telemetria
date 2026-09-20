@@ -1,5 +1,6 @@
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from bot.alerts import check_and_alert
 from config import TELEGRAM_CHAT_ID

@@ -33,9 +33,7 @@ class NvidiaGPU:
         try:
             handle = pynvml.nvmlDeviceGetHandleByIndex(0)
             name = pynvml.nvmlDeviceGetName(handle)
-            temp = pynvml.nvmlDeviceGetTemperature(
-                handle, pynvml.NVML_TEMPERATURE_GPU
-            )
+            temp = pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)
             mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
             util = pynvml.nvmlDeviceGetUtilizationRates(handle)
 

@@ -1,11 +1,11 @@
 from bot.formatter import (
-    format_status,
-    format_history,
-    format_alertas,
-    format_gpu_info,
-    format_pc_list,
     _fmt_bytes,
     _fmt_uptime,
+    format_alertas,
+    format_gpu_info,
+    format_history,
+    format_pc_list,
+    format_status,
 )
 
 

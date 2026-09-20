@@ -1,9 +1,15 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from bot.formatter import (
+    format_alertas,
+    format_gpu_info,
+    format_history,
+    format_pc_list,
+    format_status,
+)
 from config import HOSTNAME
-from database.repository import get_recent_entries, get_latest_entry, get_hostnames, row_to_stats
-from bot.formatter import format_status, format_history, format_alertas, format_gpu_info, format_pc_list
+from database.repository import get_hostnames, get_latest_entry, get_recent_entries, row_to_stats
 
 
 def _resolve_hostname(args):

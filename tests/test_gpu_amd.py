@@ -1,5 +1,5 @@
-from unittest.mock import patch, mock_open, MagicMock
 import os
+from unittest.mock import mock_open, patch
 
 from collector.gpu_amd import AMDGPU
 
@@ -22,9 +22,7 @@ class TestAMDGPUSysfs:
         with patch("builtins.open", side_effect=mock_open_side_effect):
             with patch("collector.gpu_amd.glob.glob") as mock_glob:
                 mock_glob.side_effect = lambda pattern: (
-                    ["/sys/class/drm/card0/device/vendor"]
-                    if "vendor" in pattern
-                    else []
+                    ["/sys/class/drm/card0/device/vendor"] if "vendor" in pattern else []
                 )
                 with patch.object(os.path, "exists", side_effect=mock_exists):
                     with patch.object(AMDGPU, "_detect_pyrsmi", return_value=False):
@@ -40,9 +38,7 @@ class TestAMDGPUSysfs:
         with patch("builtins.open", mock_open(read_data=vendor_content)):
             with patch("collector.gpu_amd.glob.glob") as mock_glob:
                 mock_glob.side_effect = lambda pattern: (
-                    ["/sys/class/drm/card0/device/vendor"]
-                    if "vendor" in pattern
-                    else []
+                    ["/sys/class/drm/card0/device/vendor"] if "vendor" in pattern else []
                 )
                 with patch.object(AMDGPU, "_detect_pyrsmi", return_value=False):
                     with patch.object(AMDGPU, "_detect_rocm_smi", return_value=False):

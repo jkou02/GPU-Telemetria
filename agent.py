@@ -1,10 +1,10 @@
 import logging
 import time
 
-from config import CHECK_INTERVAL_MIN, HOSTNAME, validate_config, setup_logging
-from database.repository import init_db, insert_telemetry
-from collector.system import get_system_stats
 from collector.gpu import get_gpu_stats
+from collector.system import get_system_stats
+from config import CHECK_INTERVAL_MIN, HOSTNAME, setup_logging, validate_config
+from database.repository import init_db, insert_telemetry
 
 logger = logging.getLogger(__name__)
 

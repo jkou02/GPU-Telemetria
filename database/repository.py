@@ -184,9 +184,7 @@ def get_latest_entry(hostname=None):
 def get_hostnames():
     conn = _get_connection()
     cur = _get_cursor(conn)
-    cur.execute(
-        "SELECT DISTINCT hostname FROM telemetry ORDER BY hostname"
-    )
+    cur.execute("SELECT DISTINCT hostname FROM telemetry ORDER BY hostname")
     rows = cur.fetchall()
     cur.close()
     conn.close()
