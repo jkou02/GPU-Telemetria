@@ -10,7 +10,7 @@ class FakeNVMLError(Exception):
 class TestNvidiaGPU:
     def test_is_available_with_gpu(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlDeviceGetCount.return_value = 1
                 gpu = NvidiaGPU()
@@ -19,7 +19,7 @@ class TestNvidiaGPU:
 
     def test_is_available_no_gpu(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlDeviceGetCount.return_value = 0
                 gpu = NvidiaGPU()
@@ -32,7 +32,7 @@ class TestNvidiaGPU:
 
     def test_is_available_nvml_error(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlInit.side_effect = FakeNVMLError
                 gpu = NvidiaGPU()
@@ -40,7 +40,7 @@ class TestNvidiaGPU:
 
     def test_get_gpu_stats_returns_dict(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlDeviceGetCount.return_value = 1
                 mock_pynvml.nvmlDeviceGetName.return_value = "NVIDIA GeForce RTX 4090"
@@ -67,7 +67,7 @@ class TestNvidiaGPU:
 
     def test_get_gpu_stats_not_initialized_returns_none(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlDeviceGetCount.return_value = 0
                 gpu = NvidiaGPU()
@@ -76,7 +76,7 @@ class TestNvidiaGPU:
 
     def test_get_gpu_stats_error_returns_none(self):
         with patch("collector.gpu_nvidia.PYNVML_AVAILABLE", True):
-            with patch("collector.gpu_nvidia.pynvml") as mock_pynvml:
+            with patch("collector.gpu_nvidia.pynvml", create=True) as mock_pynvml:
                 mock_pynvml.NVMLError = FakeNVMLError
                 mock_pynvml.nvmlDeviceGetCount.return_value = 1
                 mock_pynvml.nvmlDeviceGetHandleByIndex.side_effect = FakeNVMLError

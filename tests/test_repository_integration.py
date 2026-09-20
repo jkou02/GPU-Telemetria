@@ -21,15 +21,14 @@ def cleanup_test_data():
 
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
-    cur.execute("DELETE FROM telemetry WHERE hostname = %s", (TEST_HOSTNAME,))
+    cur.execute("DELETE FROM telemetry WHERE hostname IN (%s, %s)", (TEST_HOSTNAME, HOSTNAME))
     conn.commit()
     cur.close()
     conn.close()
     yield
-    # Limpiar después
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
-    cur.execute("DELETE FROM telemetry WHERE hostname = %s", (TEST_HOSTNAME,))
+    cur.execute("DELETE FROM telemetry WHERE hostname IN (%s, %s)", (TEST_HOSTNAME, HOSTNAME))
     conn.commit()
     cur.close()
     conn.close()
@@ -100,7 +99,8 @@ class TestGetHostnames:
         hostnames = get_hostnames()
         assert TEST_HOSTNAME in hostnames
 
-    def test_persistent_hostnames_remain(self):
+    def test_persistent_hostnames_remain(self, sample_system, sample_gpu):
         """Verifica que los hostnames reales (servidor) no fueron borrados."""
+        insert_telemetry(sample_system, sample_gpu, HOSTNAME)
         hostnames = get_hostnames()
         assert HOSTNAME in hostnames
