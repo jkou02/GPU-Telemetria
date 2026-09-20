@@ -170,6 +170,39 @@ El argumento `[pc]` es opcional. Si se omite, se usa el `HOSTNAME` definido
 en el `.env` de la máquina donde corre el bot (normalmente el servidor central).
 Para consultar otra PC, especifícala: `/status laptop`, `/history pc-juegos`.
 
+## Gestión de dependencias
+
+El proyecto usa [pip-tools](https://github.com/jazzband/pip-tools) para gestionar dependencias con lock files que garantizan builds reproducibles.
+
+### Archivos de dependencias
+
+| Archivo | Propósito |
+|---|---|
+| `requirements.in` | Dependencias directas de producción (sin versiones fijas) |
+| `requirements.txt` | Lock file de producción (versiones exactas + hashes) |
+| `requirements-dev.in` | Dependencias directas de desarrollo |
+| `requirements-dev.txt` | Lock file de desarrollo (versiones exactas + hashes) |
+
+### Actualizar dependencias
+
+```bash
+# Instalar pip-tools (solo la primera vez)
+pip install pip-tools
+
+# Regenerar lock files tras editar requirements.in o requirements-dev.in
+pip-compile requirements.in
+pip-compile requirements-dev.in
+
+# Sincronizar el entorno virtual con las versiones del lock file
+pip-sync requirements.txt requirements-dev.txt
+```
+
+### Agregar una nueva dependencia
+
+1. Añadir la dependencia a `requirements.in` (producción) o `requirements-dev.in` (desarrollo)
+2. Ejecutar `pip-compile requirements.in` o `pip-compile requirements-dev.in`
+3. Ejecutar `pip-sync requirements.txt requirements-dev.txt`
+
 ## Tests
 
 El proyecto incluye 84 tests unitarios y de integración que cubren:
