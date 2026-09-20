@@ -1,13 +1,12 @@
 import pytest
 
+from config import HOSTNAME
 from database.repository import (
-    insert_telemetry,
+    get_hostnames,
     get_latest_entry,
     get_recent_entries,
-    get_hostnames,
-    row_to_stats,
+    insert_telemetry,
 )
-from config import HOSTNAME
 
 TEST_HOSTNAME = "test_integracion"
 
@@ -17,6 +16,7 @@ def cleanup_test_data():
     """Limpia datos de test antes y después de cada prueba."""
     import psycopg2
     import psycopg2.extras
+
     from config import DATABASE_URL
 
     conn = psycopg2.connect(DATABASE_URL)

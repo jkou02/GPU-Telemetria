@@ -2,6 +2,7 @@ import logging
 import os
 import socket
 import sys
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,7 +24,7 @@ def setup_logging():
     logging.basicConfig(
         level=LOG_LEVEL,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        handlers=[logging.StreamHandler(sys.stdout)]
+        handlers=[logging.StreamHandler(sys.stdout)],
     )
 
 

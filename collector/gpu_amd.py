@@ -1,7 +1,7 @@
-import os
 import glob
-import subprocess
+import os
 import re
+import subprocess
 from typing import Optional
 
 
@@ -148,9 +148,7 @@ class AMDGPU:
 
             # Temperatura (hwmon)
             temp = 0.0
-            hwmon_dirs = glob.glob(
-                os.path.join(self._card_path, "hwmon/hwmon*/temp1_input")
-            )
+            hwmon_dirs = glob.glob(os.path.join(self._card_path, "hwmon/hwmon*/temp1_input"))
             for temp_path in hwmon_dirs:
                 try:
                     with open(temp_path, "r") as f:
@@ -165,9 +163,7 @@ class AMDGPU:
                 "temperature": temp,
                 "memory_total": vram_total,
                 "memory_used": vram_used,
-                "memory_percent": (vram_used / vram_total) * 100
-                if vram_total > 0
-                else 0,
+                "memory_percent": (vram_used / vram_total) * 100 if vram_total > 0 else 0,
                 "gpu_util": gpu_util,
             }
         except Exception:
@@ -203,9 +199,7 @@ class AMDGPU:
                 "temperature": temp,
                 "memory_total": vram_total,
                 "memory_used": vram_used,
-                "memory_percent": (vram_used / vram_total) * 100
-                if vram_total > 0
-                else 0,
+                "memory_percent": (vram_used / vram_total) * 100 if vram_total > 0 else 0,
                 "gpu_util": gpu_util,
             }
         except Exception:
@@ -279,9 +273,7 @@ class AMDGPU:
                 "temperature": temp,
                 "memory_total": vram_total,
                 "memory_used": vram_used,
-                "memory_percent": (vram_used / vram_total) * 100
-                if vram_total > 0
-                else 0,
+                "memory_percent": (vram_used / vram_total) * 100 if vram_total > 0 else 0,
                 "gpu_util": gpu_util,
             }
         except (FileNotFoundError, subprocess.TimeoutExpired):
