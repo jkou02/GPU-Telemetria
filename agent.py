@@ -1,12 +1,13 @@
 import time
 
-from config import CHECK_INTERVAL_MIN, HOSTNAME
+from config import CHECK_INTERVAL_MIN, HOSTNAME, validate_config
 from database.repository import init_db, insert_telemetry
 from collector.system import get_system_stats
 from collector.gpu import get_gpu_stats
 
 
 def main():
+    validate_config(["DATABASE_URL"])
     init_db()
     print(f"Agente iniciado en '{HOSTNAME}'. Intervalo: {CHECK_INTERVAL_MIN} min.")
 
