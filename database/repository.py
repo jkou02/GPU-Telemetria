@@ -1,9 +1,12 @@
+import logging
 import os
 
 import psycopg2
 import psycopg2.extras
 
 from config import DATABASE_URL, HOSTNAME
+
+logger = logging.getLogger(__name__)
 
 
 def _get_connection():
@@ -77,7 +80,7 @@ def _migrate_from_sqlite():
     sqlite_conn.close()
 
     os.rename(sqlite_path, sqlite_path + ".migrated")
-    print(f"Migrados {count} registros desde SQLite como '{HOSTNAME}'")
+    logger.info(f"Migrados {count} registros desde SQLite como '{HOSTNAME}'")
 
 
 def init_db():

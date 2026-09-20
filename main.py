@@ -1,6 +1,6 @@
 from telegram.ext import ApplicationBuilder, CommandHandler
 
-from config import TELEGRAM_BOT_TOKEN, CHECK_INTERVAL_MIN, validate_config
+from config import TELEGRAM_BOT_TOKEN, CHECK_INTERVAL_MIN, validate_config, setup_logging
 from database.repository import init_db
 from bot.handlers import (
     status_command,
@@ -19,6 +19,7 @@ async def post_init(application):
 
 
 def main():
+    setup_logging()
     validate_config(["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "DATABASE_URL"])
     init_db()
     app = (
