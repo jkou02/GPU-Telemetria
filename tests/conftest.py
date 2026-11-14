@@ -1,6 +1,6 @@
-import sys
 import os
-from unittest.mock import MagicMock, AsyncMock
+import sys
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -14,7 +14,7 @@ def sample_system():
         "cpu_temp": 45.5,
         "ram": {
             "total": 17179869184,  # 16 GB
-            "used": 8589934592,    # 8 GB
+            "used": 8589934592,  # 8 GB
             "percent": 50.0,
         },
         "uptime_seconds": 3661.0,  # 1h 1m 1s
@@ -27,7 +27,7 @@ def sample_gpu():
         "name": "NVIDIA GeForce RTX 3060",
         "temperature": 65.0,
         "memory_total": 12884901888,  # 12 GB
-        "memory_used": 4294967296,    # 4 GB
+        "memory_used": 4294967296,  # 4 GB
         "memory_percent": 33.3,
         "gpu_util": 45.0,
     }

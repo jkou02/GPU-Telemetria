@@ -1,9 +1,9 @@
 import os
 from typing import Optional
 
-from .gpu_nvidia import NvidiaGPU
 from .gpu_amd import AMDGPU
 from .gpu_intel import IntelGPU
+from .gpu_nvidia import NvidiaGPU
 
 # Mapeo de nombres de backend a clases
 _BACKENDS = {

@@ -1,7 +1,6 @@
-import os
 import glob
+import os
 import subprocess
-import re
 from typing import Optional
 
 
@@ -101,9 +100,7 @@ class IntelGPU:
 
             # Temperatura: buscar en hwmon
             temp = 0.0
-            hwmon_dirs = glob.glob(
-                os.path.join(self._card_path, "hwmon/hwmon*/temp1_input")
-            )
+            hwmon_dirs = glob.glob(os.path.join(self._card_path, "hwmon/hwmon*/temp1_input"))
             for temp_path in hwmon_dirs:
                 try:
                     with open(temp_path, "r") as f:

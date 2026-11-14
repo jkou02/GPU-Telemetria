@@ -1,6 +1,11 @@
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import MagicMock, patch
 
-from collector.system import get_system_stats, get_cpu_temperature, get_ram_usage, get_uptime_seconds
+from collector.system import (
+    get_cpu_temperature,
+    get_ram_usage,
+    get_system_stats,
+    get_uptime_seconds,
+)
 
 
 class TestCpuTemperature:

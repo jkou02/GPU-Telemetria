@@ -1,25 +1,49 @@
+import logging
+import signal
+import sys
 import time
 
-from config import CHECK_INTERVAL_MIN, HOSTNAME
-from database.repository import init_db, insert_telemetry
-from collector.system import get_system_stats
 from collector.gpu import get_gpu_stats
+from collector.system import get_system_stats
+from config import CHECK_INTERVAL_MIN, HOSTNAME, setup_logging, validate_config
+from database.repository import init_db, insert_telemetry
+
+logger = logging.getLogger(__name__)
+
+_running = True
+
+
+def _shutdown(signum, frame):
+    global _running
+    _running = False
+    logger.info(f"Señal {signum} recibida. Iniciando shutdown graceful...")
 
 
 def main():
+    setup_logging()
+    validate_config(["DATABASE_URL"])
     init_db()
-    print(f"Agente iniciado en '{HOSTNAME}'. Intervalo: {CHECK_INTERVAL_MIN} min.")
+    logger.info(f"Agente iniciado en '{HOSTNAME}'. Intervalo: {CHECK_INTERVAL_MIN} min.")
 
-    while True:
+    signal.signal(signal.SIGINT, _shutdown)
+    signal.signal(signal.SIGTERM, _shutdown)
+
+    while _running:
         try:
             system = get_system_stats()
             gpu = get_gpu_stats()
             insert_telemetry(system, gpu, HOSTNAME)
-            print(f"[{HOSTNAME}] Datos recolectados.")
+            logger.debug(f"[{HOSTNAME}] Datos recolectados.")
         except Exception as e:
-            print(f"[{HOSTNAME}] Error: {e}")
+            logger.error(f"[{HOSTNAME}] Error: {e}")
 
-        time.sleep(CHECK_INTERVAL_MIN * 60)
+        for _ in range(int(CHECK_INTERVAL_MIN * 60)):
+            if not _running:
+                break
+            time.sleep(1)
+
+    logger.info("Agente detenido correctamente.")
+    sys.exit(0)
 
 
 if __name__ == "__main__":

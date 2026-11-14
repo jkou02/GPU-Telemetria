@@ -1,9 +1,11 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from collector.gpu_nvidia import NvidiaGPU
 
 
 class FakeNVMLError(Exception):
     """Excepción falsa para simular NVMLError en tests."""
+
     pass
 
 

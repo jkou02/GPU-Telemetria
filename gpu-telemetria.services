@@ -18,7 +18,7 @@ After=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/home/jkou/Documentos/Trabajo/GPU-Telemetria
-ExecStart=/home/jkou/Documentos/Entorno/venv-Telemetria-GPU/bin/python main.py
+ExecStart=/home/jkou/Documentos/Trabajo/GPU-Telemetria/.venv/bin/python main.py
 Restart=always
 RestartSec=10
 
@@ -34,7 +34,7 @@ After=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/home/jkou/Documentos/Trabajo/GPU-Telemetria
-ExecStart=/home/jkou/Documentos/Entorno/venv-Telemetria-GPU/bin/python agent.py
+ExecStart=/home/jkou/Documentos/Trabajo/GPU-Telemetria/.venv/bin/python agent.py
 Restart=always
 RestartSec=10
 

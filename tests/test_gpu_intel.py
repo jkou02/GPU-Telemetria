@@ -1,5 +1,5 @@
-from unittest.mock import patch, mock_open
 import os
+from unittest.mock import mock_open, patch
 
 from collector.gpu_intel import IntelGPU
 
@@ -21,9 +21,7 @@ class TestIntelGPU:
         with patch("builtins.open", side_effect=mock_open_side_effect):
             with patch("collector.gpu_intel.glob.glob") as mock_glob:
                 mock_glob.side_effect = lambda pattern: (
-                    ["/sys/class/drm/card0/device/vendor"]
-                    if "vendor" in pattern
-                    else []
+                    ["/sys/class/drm/card0/device/vendor"] if "vendor" in pattern else []
                 )
                 with patch.object(os.path, "exists", side_effect=mock_exists):
                     with patch.object(IntelGPU, "_check_intel_gpu_top", return_value=False):
@@ -37,9 +35,7 @@ class TestIntelGPU:
         with patch("builtins.open", mock_open(read_data=vendor_content)):
             with patch("collector.gpu_intel.glob.glob") as mock_glob:
                 mock_glob.side_effect = lambda pattern: (
-                    ["/sys/class/drm/card0/device/vendor"]
-                    if "vendor" in pattern
-                    else []
+                    ["/sys/class/drm/card0/device/vendor"] if "vendor" in pattern else []
                 )
                 with patch.object(IntelGPU, "_check_intel_gpu_top", return_value=False):
                     gpu = IntelGPU()
@@ -57,9 +53,7 @@ class TestIntelGPU:
         with patch("builtins.open", mock_open(read_data=vendor_content)):
             with patch("collector.gpu_intel.glob.glob") as mock_glob:
                 mock_glob.side_effect = lambda pattern: (
-                    ["/sys/class/drm/card0/device/vendor"]
-                    if "vendor" in pattern
-                    else []
+                    ["/sys/class/drm/card0/device/vendor"] if "vendor" in pattern else []
                 )
                 with patch.object(os.path, "exists", return_value=False):
                     with patch.object(IntelGPU, "_check_intel_gpu_top", return_value=True):

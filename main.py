@@ -1,15 +1,17 @@
 from telegram.ext import ApplicationBuilder, CommandHandler
 
-from config import TELEGRAM_BOT_TOKEN, CHECK_INTERVAL_MIN
-from database.repository import init_db
+import logging
+
+from bot.alerts import check_and_alert
 from bot.handlers import (
-    status_command,
-    history_command,
     alertas_command,
     gpu_info_command,
+    history_command,
     pcs_command,
+    status_command,
 )
-from bot.alerts import check_and_alert
+from config import CHECK_INTERVAL_MIN, TELEGRAM_BOT_TOKEN, setup_logging, validate_config
+from database.repository import init_db
 
 
 async def post_init(application):
@@ -19,13 +21,13 @@ async def post_init(application):
 
 
 def main():
+    setup_logging()
+    # El token va embebido en la URL de cada request de python-telegram-bot;
+    # silenciar el INFO de httpx evita filtrarlo en journald.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    validate_config(["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "DATABASE_URL"])
     init_db()
-    app = (
-        ApplicationBuilder()
-        .token(TELEGRAM_BOT_TOKEN)
-        .post_init(post_init)
-        .build()
-    )
+    app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).post_init(post_init).build()
     app.add_handler(CommandHandler("status", status_command))
     app.add_handler(CommandHandler("history", history_command))
     app.add_handler(CommandHandler("alertas", alertas_command))

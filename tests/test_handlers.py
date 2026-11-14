@@ -1,14 +1,14 @@
-from unittest.mock import patch, MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from bot.handlers import (
-    status_command,
-    history_command,
-    gpu_info_command,
-    alertas_command,
-    pcs_command,
     _resolve_hostname,
+    alertas_command,
+    gpu_info_command,
+    history_command,
+    pcs_command,
+    status_command,
 )
 from config import HOSTNAME
 
