@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en el entorno o en .env}
       POSTGRES_DB: telemetria
     ports:
-      - "127.0.0.1:5433:5432"
+      - "${TELEMETRIA_DB_BIND:-127.0.0.1:5433}:5432"
     volumes:
       - telemetria_pgdata:/var/lib/postgresql/data
     healthcheck:
