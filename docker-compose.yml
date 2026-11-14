@@ -1,0 +1,29 @@
+# GPU-Telemetria — Base de datos PostgreSQL dedicada
+#
+# Uso:
+#   docker compose up -d          # iniciar
+#   docker compose down           # detener (los datos persisten en el volumen)
+#
+# La BD vive en el volumen "telemetria_pgdata", independiente de otros proyectos.
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: telemetria_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: telemetria
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en el entorno o en .env}
+      POSTGRES_DB: telemetria
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - telemetria_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetria -d telemetria"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  telemetria_pgdata:
